@@ -24,7 +24,7 @@ function Navbar() {
                 <Link to="/" className="text-4xl hd:text-6xl fhd:text-8xl 4k:text-9xl font-bold">Musicfo</Link>
             </div>
             <div className="navbar-end">
-                <Link to="/favorite" className="w-1/6 flex justify-center">
+                <Link to="/favorite" className="w-1/6 flex justify-end">
                     {theme === "light" ?
                         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" fill="none" className="w-1/2">
                             <g clip-path="url(#clip0_11_17)">
@@ -48,7 +48,7 @@ function Navbar() {
                             </defs>
                         </svg>}
                 </Link>
-                <label className="swap w-1/6 flex justify-center">
+                <label className="swap w-1/6 flex justify-end">
                     <input
                         type="checkbox"
                         className="theme-controller"
