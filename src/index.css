@@ -7,3 +7,52 @@
 * {
   font-family: "Poppins", sans-serif;
 }
+
+:root {
+  font-size: 8px;
+  overflow-x: hidden;
+  --scrollbar-thumb-color: #101010;
+  --scrollbar-thumb-hover-color: #303030;
+}
+
+[data-theme="dark"] {
+  --scrollbar-thumb-color: #d8d8d8;
+  --scrollbar-thumb-hover-color: #bbbbbb;
+}
+
+::-webkit-scrollbar {
+  width: 20px;
+}
+
+::-webkit-scrollbar-track {
+  background-color: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: var(--scrollbar-thumb-color);
+  border-radius: 20px;
+  border: 6px solid transparent;
+  background-clip: content-box;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background-color: var(--scrollbar-thumb-hover-color);
+}
+
+@media only screen and (min-width: 1280px) {
+  :root {
+    font-size: 12px;
+  }
+}
+
+@media only screen and (min-width: 1920px) {
+  :root {
+    font-size: 16px;
+  }
+}
+
+@media only screen and (min-width: 3840px) {
+  :root {
+    font-size: 20px;
+  }
+}
