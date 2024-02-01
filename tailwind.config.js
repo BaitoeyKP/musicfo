@@ -9,7 +9,11 @@ module.exports = {
       fhd: "1920px",
       "4k": "3840px",
     },
-    extend: {},
+    extend: {
+      perspective: {
+        1000: "1000px",
+      },
+    },
   },
   daisyui: {
     themes: [

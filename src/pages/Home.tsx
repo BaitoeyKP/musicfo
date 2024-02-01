@@ -22,7 +22,8 @@ function Home() {
                 <ArtistCard></ArtistCard>
                 <ArtistCard></ArtistCard>
             </div>
-        </div>)
+        </div>
+    )
 }
 
 export default Home;

@@ -1,6 +1,6 @@
 import { useState } from "react";
 
-function ArtistCard() {
+function AlbumCard() {
     const [isFlipped, setIsFlipped] = useState(false);
 
     const handleFlipF = () => {
@@ -15,7 +15,7 @@ function ArtistCard() {
             <div className={`${isFlipped ? 'hidden' : ''}`} >
                 <div className="flex flex-col justify-around w-full gap-y-3" onMouseOver={handleFlipB}>
                     <img
-                        src="https://i.scdn.co/image/ab6761610000e5ebd642648235ebf3460d2d1f6a"
+                        src="https://i.scdn.co/image/ab67616d0000b27317db30ce3f081d6818a8ad49"
                         className="rounded-lg"
                         alt=""
                     />
@@ -55,7 +55,7 @@ function ArtistCard() {
                         TOMORROW X TOGETHER
                     </h2>
                     <p className="text-4xl font-medium py-4">
-                        k-pop, k-pop boy group, pop
+                        yyyy-mm-dd
                     </p>
                 </div>
                 <div className="flex gap-x-2">
@@ -91,4 +91,4 @@ function ArtistCard() {
     )
 }
 
-export default ArtistCard;
+export default AlbumCard;
