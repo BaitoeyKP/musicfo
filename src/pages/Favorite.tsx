@@ -3,17 +3,12 @@ import Navbar from "../components/Navbar";
 import {
     Tabs,
     TabsHeader,
-    TabsBody,
     Tab,
-    TabPanel,
-    TabsProps,
-    TabsHeaderProps,
-    TabsBodyProps
 } from "@material-tailwind/react";
 import React, { useState } from "react";
 
 function Favorite() {
-    const [activeTab, setActiveTab] = useState("All");
+    const [activeTab, setActiveTab] = useState("all");
 
     const data = [
         {
