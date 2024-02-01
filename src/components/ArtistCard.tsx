@@ -2,7 +2,7 @@ function ArtistCard() {
     const isLike = true;
 
     return (
-        <div className="bg-neutral bg-opacity-25 p-6 rounded-2xl h-[260px] tablet:h-[420px] hd:h-[455px] fhd:h-[485px] 4k:h-[840px] flex flex-col justify-between">
+        <div className="bg-neutral bg-opacity-25 p-4 rounded-3xl h-[260px] tablet:h-[420px] hd:h-[455px] fhd:h-[485px] 4k:h-[840px] flex flex-col justify-between">
             <div className="h-full flex flex-col justify-around">
                 <picture className="rounded-lg">
                     <source

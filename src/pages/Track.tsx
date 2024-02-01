@@ -7,12 +7,14 @@ function Track() {
     return (
         <div className="bg-base-100 h-screen w-screen hd:overflow-hidden">
             <NavbarArtist artistName={artistName}></NavbarArtist>
-            <div className="pt-9 flex px-24">
-                <Link to="/discography" className="text-4xl text-neutral flex items-center w-1/3">{"<"} All Artist Album</Link>
+            <div className="pt-9 flex px-12 hd:px-24">
+                <Link to="/discography" className="text-4xl text-neutral flex items-center w-1/3">
+                    <span>{"<"}</span>
+                    <span className="hidden hd:block">&nbsp;All Artist Album</span></Link>
                 <h1 className="text-6xl font-bold text-center overflow-hidden min-w-[33.33%] whitespace-nowrap">TOMORROW X TOGETHERTOMORROWXTOGETHER</h1>
                 <div className="w-1/3"></div>
             </div>
-            <div className="flex flex-wrap py-9 px-24 justify-center gap-x-12 hd:h-[80%] overflow-hidden w-full gap-y-10">
+            <div className="flex flex-wrap py-9 px-12 hd:px-24 justify-center gap-x-12 hd:h-[80%] overflow-hidden w-full gap-y-10">
                 <div className="flex flex-col w-[35%] min-w-[300px]">
                     <img src="https://i.scdn.co/image/ab67616d0000b27317db30ce3f081d6818a8ad49" alt="" className="rounded-lg" />
                     <h2 className="font-bold text-4xl text-center pt-4">

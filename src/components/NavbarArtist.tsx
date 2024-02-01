@@ -43,7 +43,7 @@ function NavbarArtist({ artistName }: type) {
                 </label>
             </div>
             <div className="navbar-center max-w-[60%] overflow-hidden">
-                <Link to="/discography" className="text-8xl font-bold">"{artistName}xzcxxxxxxxzcxxxxxxxzcxxxxxxxzcxxxxxxxzcxxxxxxxzcxxxxxxxzcxxxxxx"</Link>
+                <Link to="/discography" className="text-8xl font-bold">{artistName}</Link>
             </div>
             <div className="navbar-end gap-x-9">
                 <Link to="/favorite">
