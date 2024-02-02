@@ -1,6 +1,11 @@
 import { useState } from "react";
-
-function ArtistCard() {
+type artistType = {
+    name: string;
+    genre: string[];
+    id: string;
+    img: string;
+}
+function ArtistCard({name,genre,id,img}:artistType) {
     const [isFlipped, setIsFlipped] = useState(false);
 
     const handleFlipF = () => {
@@ -9,18 +14,19 @@ function ArtistCard() {
     const handleFlipB = () => {
         setIsFlipped(true);
     };
-
+    console.log(genre);
+    
     return (
         <div className={`bg-neutral bg-opacity-25 p-4 rounded-3xl flex flex-col justify-between w-full h-full ${isFlipped ? 'flipped' : ''}`}>
             <div className={`${isFlipped ? 'hidden' : ''}`} >
                 <div className="flex flex-col justify-around w-full gap-y-3" onMouseOver={handleFlipB}>
                     <img
-                        src="https://i.scdn.co/image/ab6761610000e5ebd642648235ebf3460d2d1f6a"
+                        src={img}
                         className="rounded-lg"
                         alt=""
                     />
                     <h2 className="font-bold text-5xl max-w-full truncate">
-                        Artist Name sadsdasdsadasdsa
+                        {name}
                     </h2>
                 </div>
                 <div className="flex justify-end">
@@ -52,10 +58,10 @@ function ArtistCard() {
             <div className={`${isFlipped ? '' : 'hidden'} h-full flex flex-col justify-between`} onMouseOver={handleFlipB} onMouseOut={handleFlipF}>
                 <div className="overflow-hidden">
                     <h2 className="font-bold text-5xl hyphens-auto">
-                        TOMORROW X TOGETHER
+                        {name}
                     </h2>
                     <p className="text-4xl font-medium py-4">
-                        k-pop, k-pop boy group, pop
+                        {genre.map((x)=>x)}
                     </p>
                 </div>
                 <div className="flex gap-x-2">
