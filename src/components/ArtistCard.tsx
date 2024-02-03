@@ -37,7 +37,7 @@ function ArtistCard({ name, genre, id, images }: artistType) {
                         className="rounded-lg"
                         alt=""
                     />
-                    <h2 className="font-bold text-5xl max-w-full truncate">
+                    <h2 className="font-bold text-5xl max-w-full truncate pb-2">
                         {name}
                     </h2>
                 </div>

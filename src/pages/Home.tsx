@@ -6,12 +6,23 @@ import { artistType, fetchArtistType } from "../Type";
 import { useCookies } from "react-cookie";
 
 const artislist = [
-    "6YVMFz59CuY7ngCxTxjpxE",//aespa
-    "5RmQ8k4l3HZ8JoPb4mNsML",//Agust D
-    "0gvHPdYxlU94W7V5MSIlFe",//Bilkin
-    "2cFrymmkijnjDg9SS92EPM",//Blackbean
-    "41MozSoPIsD1dJM0CLPjZF",//BLACKPINK
-    "3Nrfpe0tUJi4K4DXYWgMUX",//bts
+    "6YVMFz59CuY7ngCxTxjpxE",   //aespa
+    "5RmQ8k4l3HZ8JoPb4mNsML",   //Agust D
+    "41MozSoPIsD1dJM0CLPjZF",   //BLACKPINK
+    "3Nrfpe0tUJi4K4DXYWgMUX",   //BTS
+    "0b1sIQumIAsNbqAoIClSpy",   //j-hope
+    "1oSPZhvZMIrWW5I41kPkkY",   //Jimin
+    "5vV3bFXnN6D6N3Nj4xRvaV",   //JIN
+    "6HaGTQPmzraVmaVxvz6EUc",   //Jung Kook
+    "2auC28zjQyVTsiZKNgPRGs",   //RM
+    "0ebNdVaOfp6N0oZ1guIxM8",   //SUGA
+    "3JsHnjpbhX4SnySpvpa9DK",   //V
+    "",   //
+    "",   //
+    "",   //
+    "",   //
+    "",   //
+    "",   //
 ]
 
 function Home() {

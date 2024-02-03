@@ -37,7 +37,7 @@ function AlbumCard({ name, release_date, id, images, id_artist, artist }: albumT
                         className="rounded-lg"
                         alt=""
                     />
-                    <h2 className="font-bold text-5xl max-w-full truncate">
+                    <h2 className="font-bold text-5xl max-w-full truncate pb-2">
                         {name}
                     </h2>
                 </div>

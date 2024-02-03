@@ -1,4 +1,4 @@
-import { Link } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import React, { useEffect, useState } from 'react';
 
 interface type {
@@ -8,6 +8,7 @@ interface type {
 function NavbarArtist({ artistName }: type) {
     const storedTheme = localStorage.getItem("theme");
     const [theme, setTheme] = useState<string>(storedTheme || "light");
+    const { id_artist, id_album, artist } = useParams();
 
     const handleToggle = (e: React.ChangeEvent<HTMLInputElement>) => {
         setTheme(e.target.checked ? "dark" : "light");
@@ -42,8 +43,8 @@ function NavbarArtist({ artistName }: type) {
                         </svg>}
                 </label>
             </div>
-            <div className="navbar-center max-w-[60%] overflow-hidden">
-                <Link to="/discography" className="text-8xl font-bold">{artistName}</Link>
+            <div className="navbar-center max-w-[60%] overflow-hidden py-4">
+                <Link to={`/discography/${artist}/${id_artist}`} className="text-8xl font-bold">{artistName}</Link>
             </div>
             <div className="navbar-end gap-x-9">
                 <Link to="/favorite">

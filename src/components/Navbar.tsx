@@ -38,7 +38,7 @@ function Navbar() {
                 </label>
             </div>
             <div className="navbar-center">
-                <Link to="/" className="text-8xl font-bold">Musicfo</Link>
+                <Link to="/" className="text-8xl font-bold py-4">Musicfo</Link>
             </div>
             <div className="navbar-end gap-x-9">
                 <Link to="/favorite">
