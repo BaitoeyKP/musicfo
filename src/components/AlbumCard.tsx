@@ -12,6 +12,7 @@ function AlbumCard({ name, release_date, id, images, id_artist, artist }: albumT
     const handleFlipF = () => {
         setIsFlipped(false);
     };
+
     const handleFlipB = () => {
         setIsFlipped(true);
     };
@@ -31,7 +32,7 @@ function AlbumCard({ name, release_date, id, images, id_artist, artist }: albumT
     return (
         <div className={`bg-neutral bg-opacity-25 p-4 rounded-3xl flex flex-col justify-between w-full h-full ${isFlipped ? 'flipped' : ''}`}>
             <div className={`${isFlipped ? 'hidden' : ''}`} >
-                <div className="flex flex-col justify-around w-full gap-y-3" onMouseOver={handleFlipB}>
+                <Link to={`/track/${artist}/${id_artist}/${id}`} className="flex flex-col justify-around w-full gap-y-3" onMouseOver={handleFlipB}>
                     <img
                         src={images}
                         className="rounded-lg"
@@ -40,7 +41,7 @@ function AlbumCard({ name, release_date, id, images, id_artist, artist }: albumT
                     <h2 className="font-bold text-5xl max-w-full truncate pb-2">
                         {name}
                     </h2>
-                </div>
+                </Link>
                 <div className="flex justify-end">
                     <label className="swap swap-flip">
                         <input type="checkbox" checked={checked} onChange={handleChange} />
@@ -68,7 +69,7 @@ function AlbumCard({ name, release_date, id, images, id_artist, artist }: albumT
             </div>
 
             <div className={`${isFlipped ? '' : 'hidden'} h-full flex flex-col justify-between`} onMouseOver={handleFlipB} onMouseOut={handleFlipF}>
-                <div className="overflow-hidden">
+                <div className="overflow-hidden cursor-context-menu">
                     <h2 className="font-bold text-5xl hyphens-auto">
                         {name}
                     </h2>
@@ -78,7 +79,7 @@ function AlbumCard({ name, release_date, id, images, id_artist, artist }: albumT
                 </div>
                 <div className="flex gap-x-2">
                     <Link to={`/track/${artist}/${id_artist}/${id}`} className="btn btn-outline text-xl w-[48%]">Read more</Link>
-                    <button className="btn text-xl w-[48%] border-info bg-transparent hover:border-info">
+                    <button className="btn text-xl w-[48%] border-info bg-transparent hover:border-info" onClick={handleChange}>
                         <label className="swap swap-flip">
                             <input type="checkbox" checked={checked} onChange={handleChange} />
                             <div className="swap-on">

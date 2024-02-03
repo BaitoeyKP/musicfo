@@ -57,18 +57,23 @@ function Track() {
     if (!tracks) return <div>loading</div>
 
     return (
-        <div className="bg-base-100 h-screen w-screen">
-            <NavbarArtist artistName={artist!}></NavbarArtist>
-            <div className="pt-9 flex px-12 hd:px-24">
-                <Link to={`/discography/${artist}/${id_artist}`} className="text-4xl text-neutral flex items-center w-1/3">
-                    <span>{"<"}</span>
-                    <span className="hidden hd:block">&nbsp;All Artist Discography</span></Link>
-                <h1 className="text-6xl font-bold text-center overflow-hidden min-w-[33.33%] whitespace-nowrap pb-2">{tracks.name}</h1>
-                <div className="w-1/3"></div>
+        <div className="bg-base-100 h-screen w-screen flex flex-col">
+            <div id="top">
+                <NavbarArtist artistName={artist!}></NavbarArtist>
+                <div className="pt-9 flex px-12 hd:px-24 justify-between items-center">
+                    <Link to={`/discography/${artist}/${id_artist}`} className="text-4xl text-neutral flex items-center w-1/4 h-full">
+                        <span>{"<"}</span>
+                        <span className="hidden hd:block">&nbsp;All Discography</span>
+                    </Link>
+                    <h1 className="text-6xl font-bold text-center overflow-hidden w-1/2 pb-2 cursor-context-menu">{tracks.name}</h1>
+                    <div className="w-1/4"></div>
+                </div>
             </div>
-            <div className="flex flex-wrap py-9 px-12 hd:px-24 justify-center gap-x-12 hd:h-[80%] w-full gap-y-10">
-                <div className="flex flex-col w-[35%] min-w-[300px]">
-                    <img src={tracks.images[0].url} alt="" className="rounded-lg" />
+            <div id="bottom" className="flex flex-wrap py-9 px-12 hd:px-24 justify-center gap-x-12 w-full gap-y-10 cursor-context-menu flex-1 overflow-hidden">
+                <div id="content1" className="flex flex-col w-[35%] min-w-[300px] flex-grow max-h-full">
+                    <div className="h-[90%] flex items-center justify-center">
+                        <img src={tracks.images[0].url} alt="" className="rounded-lg object-contain h-full" />
+                    </div>
                     <h2 className="font-bold text-4xl text-center pt-4">
                         {tracks.release_date}
                     </h2>

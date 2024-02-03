@@ -155,13 +155,13 @@ function Favorite() {
                     <span>{"<"}</span>
                     <span className="hidden hd:block">&nbsp;Home</span>
                 </Link>
-                <h1 className="text-6xl font-bold text-center overflow-hidden min-w-[33.33%] whitespace-nowrap">FAVORITE</h1>
+                <h1 className="text-6xl font-bold text-center overflow-hidden min-w-[33.33%] whitespace-nowrap cursor-context-menu">FAVORITE</h1>
                 <div className="w-1/3"></div>
             </div>
             <div className="w-full flex justify-center">
                 <Tabs value={activeTab}>
                     <TabsHeader
-                        className="text-4xl w-1/2 gap-x-5 pt-4"
+                        className="text-4xl w-1/2 gap-x-5 pt-4 cursor-pointer"
                         placeholder={undefined}
                     >
                         {data.map(({ label, value }) => (
