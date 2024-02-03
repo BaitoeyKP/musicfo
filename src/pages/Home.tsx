@@ -6,23 +6,30 @@ import { artistType, fetchArtistType } from "../Type";
 import { useCookies } from "react-cookie";
 
 const artislist = [
+    "2AfmfGFbe0A0WsTYm0SDTx",   //(G)I-DLE
+    "3aBwCcP4CB8M6S7YV8QkOg",   //4EVE
     "6YVMFz59CuY7ngCxTxjpxE",   //aespa
     "5RmQ8k4l3HZ8JoPb4mNsML",   //Agust D
+    "2p48L95TwEaYkSdn6R7LOr",   //BamBam
+    "2ORibfYGMt8fuIimSDCTq1",   //bamm
     "41MozSoPIsD1dJM0CLPjZF",   //BLACKPINK
     "3Nrfpe0tUJi4K4DXYWgMUX",   //BTS
+    "3HqSLMAZ3g3d5poNaI7GOU",   //IU
     "0b1sIQumIAsNbqAoIClSpy",   //j-hope
     "1oSPZhvZMIrWW5I41kPkkY",   //Jimin
     "5vV3bFXnN6D6N3Nj4xRvaV",   //JIN
     "6HaGTQPmzraVmaVxvz6EUc",   //Jung Kook
+    "1uNFoZAHBGtllmzznpCI3s",   //Justin Bieber
+    "4SpbR6yFEvexJuaBpgAU5p",   //LE SSERAFIM
+    "1eVPKI2R4NlX6P5FIuMXis",   //MILLI
+    "6HvZYsbFfjnjFrWF950C9d",   //NewJeans
+    "6HlUN1Md7UT62mNJHOYRsK",   //PiXXie
+    "4tNPboeMQnpoUX7IEbPLdF",   //PROXIE
     "2auC28zjQyVTsiZKNgPRGs",   //RM
     "0ebNdVaOfp6N0oZ1guIxM8",   //SUGA
+    "7n2Ycct7Beij7Dj7meI4X0",   //TWICE
+    "0ghlgldX5Dd6720Q3qFyQB",   //txt
     "3JsHnjpbhX4SnySpvpa9DK",   //V
-    "",   //
-    "",   //
-    "",   //
-    "",   //
-    "",   //
-    "",   //
 ]
 
 function Home() {

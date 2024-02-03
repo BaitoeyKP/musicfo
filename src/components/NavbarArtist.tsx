@@ -43,7 +43,7 @@ function NavbarArtist({ artistName }: type) {
                         </svg>}
                 </label>
             </div>
-            <div className="navbar-center max-w-[60%] overflow-hidden py-4">
+            <div className="navbar-center max-w-[60%] overflow-hidden py-4 whitespace-nowrap">
                 <Link to={`/discography/${artist}/${id_artist}`} className="text-8xl font-bold">{artistName}</Link>
             </div>
             <div className="navbar-end gap-x-9">

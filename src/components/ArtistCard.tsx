@@ -69,7 +69,7 @@ function ArtistCard({ name, genre, id, images }: artistType) {
 
             <div className={`${isFlipped ? '' : 'hidden'} h-full flex flex-col justify-between`} onMouseOver={handleFlipB} onMouseOut={handleFlipF}>
                 <div className="overflow-hidden max-h-96 cursor-context-menu">
-                    <h2 className="font-bold text-5xl hyphens-auto">
+                    <h2 className="font-bold text-5xl hyphens-auto leading-tight">
                         {name}
                     </h2>
                     <p className="text-4xl font-medium py-4">
