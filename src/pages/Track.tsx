@@ -1,22 +1,74 @@
-import { Link } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import NavbarArtist from "../components/NavbarArtist";
+import { useEffect, useState } from "react";
+import { fetchTackType } from "../Type";
+import axios from "axios";
 
 function Track() {
-    const artistName = "BTS"
+    const { id_artist, id_album, artist } = useParams();
+    const [tacks, setTacks] = useState<fetchTackType>();
+
+    function Authorization() {
+        let data = {
+            'grant_type': 'client_credentials'
+        };
+        let config = {
+            method: 'post',
+            url: 'https://accounts.spotify.com/api/token',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+                'Authorization': 'Basic YzhkMDU3YjYxOGMyNDZkODhjNDZkNGE5YWVjNmMxYmI6NjkzNjY1N2NiNjQ4NGFmM2EwMjZiYzlhMmQxNTVmNDg='
+            },
+            data: data
+        };
+        axios.request(config)
+            .then(function (response) {
+                localStorage.setItem('token', response.data.access_token)
+            })
+            .catch(function (error) {
+                // handle error
+                console.log(error);
+            })
+    }
+
+    function fetch() {
+        let config = {
+            method: 'get',
+            maxBodyLength: Infinity,
+            url: `https://api.spotify.com/v1/albums/${id_album}`,
+            headers: {
+                'Authorization': `Bearer ${localStorage.getItem('token')}`
+            }
+        };
+        axios.request(config)
+            .then(function (response: { data: fetchTackType }) {
+                console.log(response.data);
+                setTacks(response.data)
+            })
+            .catch(function (error) {
+                Authorization();
+            })
+    }
+
+    useEffect(() => {
+        fetch()
+    }, [])
+    console.log(tacks);
+    if (!tacks) return <div>loading</div>
 
     return (
         <div className="bg-base-100 h-screen w-screen hd:overflow-hidden">
-            <NavbarArtist artistName={artistName}></NavbarArtist>
+            <NavbarArtist artistName={artist!}></NavbarArtist>
             <div className="pt-9 flex px-12 hd:px-24">
-                <Link to="/discography" className="text-4xl text-neutral flex items-center w-1/3">
+                <Link to={`/discography/${artist}/${id_artist}`} className="text-4xl text-neutral flex items-center w-1/3">
                     <span>{"<"}</span>
                     <span className="hidden hd:block">&nbsp;All Artist Album</span></Link>
-                <h1 className="text-6xl font-bold text-center overflow-hidden min-w-[33.33%] whitespace-nowrap">TOMORROW X TOGETHERTOMORROWXTOGETHER</h1>
+                <h1 className="text-6xl font-bold text-center overflow-hidden min-w-[33.33%] whitespace-nowrap">{tacks.name}</h1>
                 <div className="w-1/3"></div>
             </div>
             <div className="flex flex-wrap py-9 px-12 hd:px-24 justify-center gap-x-12 hd:h-[80%] overflow-hidden w-full gap-y-10">
                 <div className="flex flex-col w-[35%] min-w-[300px]">
-                    <img src="https://i.scdn.co/image/ab67616d0000b27317db30ce3f081d6818a8ad49" alt="" className="rounded-lg" />
+                    <img src={tacks.images[0].url} alt="" className="rounded-lg" />
                     <h2 className="font-bold text-4xl text-center pt-4">
                         yyyy-mm-dd
                     </h2>
@@ -25,27 +77,7 @@ function Track() {
                     <h2 className="text-5xl font-bold pb-3 text-center hd:text-start">TRACK</h2>
                     <div className="flex justify-center hd:justify-start">
                         <div className="text-4xl font-medium break-words max-w-full">
-                            <p>1. Song Name</p>
-                            <p>2. Song Name</p>
-                            <p>3. Song Name</p>
-                            <p>4. Song Name</p>
-                            <p>5. Song Name</p>
-                            <p>6. Song Name</p>
-                            <p>7. Song Name</p>
-                            <p>8. Song Name</p>
-                            <p>9. Song Name</p>
-                            <p>10. Song Name</p>
-                            <p>11. Song Name</p>
-                            <p>12. Song Name</p>
-                            <p>13. Song Name</p>
-                            <p>14. Song Name</p>
-                            <p>15. Song Name</p>
-                            <p>16. Song Name</p>
-                            <p>17. Song Name</p>
-                            <p>18. Song Name</p>
-                            <p>19. Song Name</p>
-                            <p>20. Song Name</p>
-                            <p>21. Song Name</p>
+                            {tacks.tracks.items.map((x: { name: string }, i) => <p>{`${i}. ${x.name}`}</p>)}
                         </div>
                     </div>
                 </div>

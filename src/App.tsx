@@ -9,8 +9,8 @@ function App() {
     <Routes>
       <Route index element={<Home />} />
       <Route path='/favorite' element={<Favorite />} />
-      <Route path='/discography' element={<Discography />} />
-      <Route path='/track' element={<Track />} />
+      <Route path='/discography/:artist/:id_artist' element={<Discography />} />
+      <Route path='/track/:artist/:id_artist/:id_album' element={<Track />} />
     </Routes>
   );
 }

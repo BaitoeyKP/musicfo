@@ -1,12 +1,12 @@
-import { useState } from "react";
-type artistType = {
-    name: string;
-    genre: string[];
-    id: string;
-    img: string;
-}
-function ArtistCard({name,genre,id,img}:artistType) {
+import { useEffect, useState } from "react";
+import { useCookies } from "react-cookie";
+import { artistType } from "../Type";
+import { Link } from "react-router-dom";
+
+function ArtistCard({ name, genre, id, images }: artistType) {
     const [isFlipped, setIsFlipped] = useState(false);
+    const [cookies, setCookie] = useCookies<string>([]);
+    const [checked, setChecked] = useState(cookies[id].data);
 
     const handleFlipF = () => {
         setIsFlipped(false);
@@ -14,14 +14,26 @@ function ArtistCard({name,genre,id,img}:artistType) {
     const handleFlipB = () => {
         setIsFlipped(true);
     };
-    console.log(genre);
-    
+
+    useEffect(() => {
+        const isChecked = cookies[id].data;
+        if (isChecked === 'true') {
+            setChecked(true);
+        }
+    }, []);
+
+    const handleChange = () => {
+        setChecked(!checked);
+        setCookie(id, { data: !checked, type: "artist" }); // Expires in 7 days
+    };
+    console.log(checked);
+
     return (
         <div className={`bg-neutral bg-opacity-25 p-4 rounded-3xl flex flex-col justify-between w-full h-full ${isFlipped ? 'flipped' : ''}`}>
             <div className={`${isFlipped ? 'hidden' : ''}`} >
                 <div className="flex flex-col justify-around w-full gap-y-3" onMouseOver={handleFlipB}>
                     <img
-                        src={img}
+                        src={images}
                         className="rounded-lg"
                         alt=""
                     />
@@ -31,7 +43,7 @@ function ArtistCard({name,genre,id,img}:artistType) {
                 </div>
                 <div className="flex justify-end">
                     <label className="swap swap-flip">
-                        <input type="checkbox" />
+                        <input type="checkbox" checked={checked} onChange={handleChange} />
                         <div className="swap-on">
                             <svg xmlns="http://www.w3.org/2000/svg" width="36" height="36" viewBox="0 0 36 36" fill="none" className="text-info w-9">
                                 <g clip-path="url(#clip0_11_370)">
@@ -61,14 +73,14 @@ function ArtistCard({name,genre,id,img}:artistType) {
                         {name}
                     </h2>
                     <p className="text-4xl font-medium py-4">
-                        {genre.map((x)=>x)}
+                        {genre.map((x) => x)}
                     </p>
                 </div>
                 <div className="flex gap-x-2">
-                    <button className="btn btn-outline text-xl w-[48%]">Read more</button>
+                    <Link to={`/discography/${name}/${id}`} className="btn btn-outline text-xl w-[48%]">Read more</Link>
                     <button className="btn text-xl w-[48%] border-info bg-transparent hover:border-info">
                         <label className="swap swap-flip">
-                            <input type="checkbox" />
+                            <input type="checkbox" checked={checked} onChange={handleChange} />
                             <div className="swap-on">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="36" height="36" viewBox="0 0 36 36" fill="none" className="text-info w-9">
                                     <g clip-path="url(#clip0_11_370)">

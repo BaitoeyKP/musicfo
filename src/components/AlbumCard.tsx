@@ -1,7 +1,13 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { useCookies } from "react-cookie";
+import { Link, useParams } from "react-router-dom";
+import { albumType } from "../Type";
 
-function AlbumCard() {
+function AlbumCard({ name, release_date, id, images, id_artist, artist }: albumType) {
     const [isFlipped, setIsFlipped] = useState(false);
+    const { } = useParams();
+    const [cookies, setCookie] = useCookies<string>([]);
+    const [checked, setChecked] = useState(cookies[id].data);
 
     const handleFlipF = () => {
         setIsFlipped(false);
@@ -10,22 +16,34 @@ function AlbumCard() {
         setIsFlipped(true);
     };
 
+    useEffect(() => {
+        const isChecked = cookies[id].data;
+        if (isChecked === 'true') {
+            setChecked(true);
+        }
+    }, []);
+
+    const handleChange = () => {
+        setChecked(!checked);
+        setCookie(id, { data: !checked, type: "album" }); // Expires in 7 days
+    };
+
     return (
         <div className={`bg-neutral bg-opacity-25 p-4 rounded-3xl flex flex-col justify-between w-full h-full ${isFlipped ? 'flipped' : ''}`}>
             <div className={`${isFlipped ? 'hidden' : ''}`} >
                 <div className="flex flex-col justify-around w-full gap-y-3" onMouseOver={handleFlipB}>
                     <img
-                        src="https://i.scdn.co/image/ab67616d0000b27317db30ce3f081d6818a8ad49"
+                        src={images}
                         className="rounded-lg"
                         alt=""
                     />
                     <h2 className="font-bold text-5xl max-w-full truncate">
-                        Artist Name sadsdasdsadasdsa
+                        {name}
                     </h2>
                 </div>
                 <div className="flex justify-end">
                     <label className="swap swap-flip">
-                        <input type="checkbox" />
+                        <input type="checkbox" checked={checked} onChange={handleChange} />
                         <div className="swap-on">
                             <svg xmlns="http://www.w3.org/2000/svg" width="36" height="36" viewBox="0 0 36 36" fill="none" className="text-info w-9">
                                 <g clip-path="url(#clip0_11_370)">
@@ -52,17 +70,17 @@ function AlbumCard() {
             <div className={`${isFlipped ? '' : 'hidden'} h-full flex flex-col justify-between`} onMouseOver={handleFlipB} onMouseOut={handleFlipF}>
                 <div className="overflow-hidden">
                     <h2 className="font-bold text-5xl hyphens-auto">
-                        TOMORROW X TOGETHER
+                        {name}
                     </h2>
                     <p className="text-4xl font-medium py-4">
-                        yyyy-mm-dd
+                        {release_date}
                     </p>
                 </div>
                 <div className="flex gap-x-2">
-                    <button className="btn btn-outline text-xl w-[48%]">Read more</button>
+                    <Link to={`/track/${artist}/${id_artist}/${id}`} className="btn btn-outline text-xl w-[48%]">Read more</Link>
                     <button className="btn text-xl w-[48%] border-info bg-transparent hover:border-info">
                         <label className="swap swap-flip">
-                            <input type="checkbox" />
+                            <input type="checkbox" checked={checked} onChange={handleChange} />
                             <div className="swap-on">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="36" height="36" viewBox="0 0 36 36" fill="none" className="text-info w-9">
                                     <g clip-path="url(#clip0_11_370)">
