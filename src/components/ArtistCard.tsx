@@ -29,8 +29,9 @@ function ArtistCard({ name, genre, id, images }: artistType) {
     console.log(checked);
 
     return (
-        <div className={`bg-neutral bg-opacity-25 p-4 rounded-3xl flex flex-col justify-between w-full h-full ${isFlipped ? 'flipped' : ''}`}>
-            <div className={`${isFlipped ? 'hidden' : ''}`} >
+        <div className="h-full w-full">
+            {/* front */}
+            <div className={`bg-neutral bg-opacity-25 p-4 rounded-3xl flex flex-col justify-between ${isFlipped ? 'hidden' : ''}`}>
                 <Link to={`/discography/${name}/${id}`} className="flex flex-col justify-around w-full gap-y-3" onMouseOver={handleFlipB}>
                     <img
                         src={images}
@@ -66,8 +67,12 @@ function ArtistCard({ name, genre, id, images }: artistType) {
                     </label>
                 </div>
             </div>
-
-            <div className={`${isFlipped ? '' : 'hidden'} h-full flex flex-col justify-between`} onMouseOver={handleFlipB} onMouseOut={handleFlipF}>
+            {/* back */}
+            <div
+                className={`bg-neutral bg-opacity-25 p-4 rounded-3xl flex flex-col justify-between h-full w-full ${isFlipped ? '' : 'hidden'}`}
+                onMouseOver={handleFlipB}
+                onMouseOut={handleFlipF}
+            >
                 <div className="overflow-hidden max-h-96 cursor-context-menu">
                     <h2 className="font-bold text-5xl hyphens-auto leading-tight">
                         {name}
