@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useCookies } from "react-cookie";
 import { artistType } from "../Type";
 import { Link } from "react-router-dom";
@@ -7,12 +7,18 @@ function ArtistCard({ name, genre, id, images }: artistType) {
     const [isFlipped, setIsFlipped] = useState(false);
     const [cookies, setCookie] = useCookies<string>([]);
     const [checked, setChecked] = useState(cookies[id].data);
+    const [cardHeight, setCardHeight] = useState(0);
+    const frontRef = useRef<HTMLDivElement>(null);
 
     const handleFlipF = () => {
         setIsFlipped(false);
+        console.log("front");
+
     };
     const handleFlipB = () => {
         setIsFlipped(true);
+        console.log("back");
+
     };
 
     useEffect(() => {
@@ -28,10 +34,29 @@ function ArtistCard({ name, genre, id, images }: artistType) {
     };
     console.log(checked);
 
+    useEffect(() => {
+        const updateCardHeight = () => {
+            const frontCardHeight = frontRef.current?.clientHeight;
+            if (frontCardHeight) {
+                setCardHeight(frontCardHeight);
+            }
+        };
+        updateCardHeight();
+        window.addEventListener('resize', updateCardHeight);
+        return () => {
+            window.removeEventListener('resize', updateCardHeight);
+        };
+    }, []);
+    console.log(cardHeight);
+    
+
     return (
         <div className="h-full w-full">
             {/* front */}
-            <div className={`bg-neutral bg-opacity-25 p-4 rounded-3xl flex flex-col justify-between ${isFlipped ? 'hidden' : ''}`}>
+            <div
+                ref={frontRef}
+                className={`bg-neutral bg-opacity-25 p-4 rounded-3xl flex flex-col justify-between ${isFlipped ? 'hidden' : ''}`}
+            >
                 <Link to={`/discography/${name}/${id}`} className="flex flex-col justify-around w-full gap-y-3" onMouseOver={handleFlipB}>
                     <img
                         src={images}
@@ -69,9 +94,10 @@ function ArtistCard({ name, genre, id, images }: artistType) {
             </div>
             {/* back */}
             <div
-                className={`bg-neutral bg-opacity-25 p-4 rounded-3xl flex flex-col justify-between h-full w-full ${isFlipped ? '' : 'hidden'}`}
+                className={`bg-neutral bg-opacity-25 p-4 rounded-3xl flex flex-col justify-between w-full ${isFlipped ? '' : 'hidden'}`}
                 onMouseOver={handleFlipB}
                 onMouseOut={handleFlipF}
+                style={{ height: `${cardHeight}px` }}
             >
                 <div className="overflow-hidden max-h-96 cursor-context-menu">
                     <h2 className="font-bold text-5xl hyphens-auto leading-tight">
