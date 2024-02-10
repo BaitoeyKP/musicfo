@@ -46,7 +46,7 @@ function ArtistCard({ name, genre, id, images }: artistType) {
         return () => {
             window.removeEventListener('resize', updateCardHeight);
         };
-    }, []);
+    }, [checked]);
     console.log(cardHeight);
     
 

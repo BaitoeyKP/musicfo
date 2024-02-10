@@ -43,7 +43,7 @@ function AlbumCard({ name, release_date, id, images, id_artist, artist }: albumT
         return () => {
             window.removeEventListener('resize', updateCardHeight);
         };
-    }, []);
+    }, [checked]);
 
     return (
         <div className="h-full w-full">
