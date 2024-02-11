@@ -95,7 +95,7 @@ function AlbumCard({ name, release_date, id, images, id_artist, artist }: albumT
                 style={{ height: `${cardHeight}px` }}
             >
                 <div className={`${isFlipped ? '' : 'hidden'} h-full flex flex-col justify-between`}>
-                    <div className="overflow-hidden cursor-context-menu max-h-96">
+                    <div className="overflow-y-scroll cursor-context-menu max-h-96">
                         <h2 className="font-bold text-5xl hyphens-auto leading-tight">
                             {name}
                         </h2>

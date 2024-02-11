@@ -94,7 +94,7 @@ function ArtistCard({ name, genre, id, images }: artistType) {
             </div>
             {/* back */}
             <div
-                className={`bg-neutral bg-opacity-25 p-4 rounded-3xl flex flex-col justify-between w-full ${isFlipped ? '' : 'hidden'}`}
+                className={`bg-neutral bg-opacity-25 p-4 rounded-3xl flex flex-col justify-between w-full h-full ${isFlipped ? '' : 'hidden'}`}
                 onMouseOver={handleFlipB}
                 onMouseOut={handleFlipF}
                 style={{ height: `${cardHeight}px` }}
