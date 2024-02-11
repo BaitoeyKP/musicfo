@@ -10,8 +10,14 @@ module.exports = {
       "4k": "3840px",
     },
     extend: {
-      perspective: {
-        1000: "1000px",
+      animation: {
+        "infinite-scroll": "infinite-scroll 25s linear infinite",
+      },
+      keyframes: {
+        "infinite-scroll": {
+          from: { transform: "translateX(0)" },
+          to: { transform: "translateX(-100%)" },
+        },
       },
     },
   },

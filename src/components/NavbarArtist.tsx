@@ -1,5 +1,5 @@
 import { Link, useParams } from "react-router-dom";
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 
 interface type {
     artistName: string;
@@ -9,6 +9,8 @@ function NavbarArtist({ artistName }: type) {
     const storedTheme = localStorage.getItem("theme");
     const [theme, setTheme] = useState<string>(storedTheme || "light");
     const { id_artist, id_album, artist } = useParams();
+    const containerRef = useRef<HTMLDivElement>(null);
+    const [isOverflowed, setIsOverflowed] = useState(false);
 
     const handleToggle = (e: React.ChangeEvent<HTMLInputElement>) => {
         setTheme(e.target.checked ? "dark" : "light");
@@ -21,6 +23,13 @@ function NavbarArtist({ artistName }: type) {
             htmlElement.setAttribute("data-theme", theme);
         }
     }, [theme]);
+
+    useEffect(() => {
+        const container = containerRef.current;
+        if (container) {
+            setIsOverflowed(container.scrollWidth > container.clientWidth);
+        }
+    }, []);
 
     return (
         <div className="navbar bg-base-100 px-12 hd:px-24 border-b border-info">
@@ -43,8 +52,11 @@ function NavbarArtist({ artistName }: type) {
                         </svg>}
                 </label>
             </div>
-            <div className="navbar-center max-w-[60%] overflow-x-scroll overflow-y-hidden py-4 whitespace-nowrap">
-                <Link to={`/discography/${artist}/${id_artist}`} className="text-8xl font-bold">{artistName}</Link>
+            <div
+                className="navbar-center max-w-[60%] overflow-hidden py-4 whitespace-nowrap "
+                ref={containerRef}
+            >
+                <Link to={`/discography/${artist}/${id_artist}`} className={`text-8xl font-bold ${isOverflowed ? 'animate-infinite-scroll' : ''}`}>{artistName}</Link>
             </div>
             <div className="navbar-end gap-x-9">
                 <Link to="/favorite">
