@@ -47,8 +47,8 @@ function ArtistCard({ name, genre, id, images }: artistType) {
             window.removeEventListener('resize', updateCardHeight);
         };
     }, [checked]);
-    console.log(cardHeight);
-    
+    console.log("artist : " + cardHeight);
+
 
     return (
         <div className="h-full w-full">
@@ -97,7 +97,7 @@ function ArtistCard({ name, genre, id, images }: artistType) {
                 className={`bg-neutral bg-opacity-25 p-4 rounded-3xl flex flex-col justify-between w-full h-full ${isFlipped ? '' : 'hidden'}`}
                 onMouseOver={handleFlipB}
                 onMouseOut={handleFlipF}
-                style={{ height: `${cardHeight}px` }}
+                style={{ height: `${cardHeight}px`, minHeight: '100%' }}
             >
                 <div className="overflow-hidden max-h-96 cursor-context-menu">
                     <h2 className="font-bold text-5xl hyphens-auto leading-tight">

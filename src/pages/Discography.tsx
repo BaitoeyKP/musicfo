@@ -46,7 +46,7 @@ function Discography() {
         axios.request(config)
             .then(function (response: { data: { items: fetchAlbumType[] } }) {
                 console.log(response.data);
-                setAlbum(response.data.items.map((x: fetchAlbumType) => {
+                let temp = (response.data.items.map((x: fetchAlbumType) => {
                     const tempAlbum: albumType = {
                         name: x.name,
                         release_date: x.release_date,
@@ -55,13 +55,12 @@ function Discography() {
                         id_artist: "",
                         artist: ""
                     };
-
                     if (cookies[tempAlbum.id] == undefined)
                         setCookie(tempAlbum.id, { data: false, type: "album" });
                     return tempAlbum
                 }))
-
-
+                temp = temp.sort((a, b) => a.release_date > b.release_date ? -1 : 1)
+                setAlbum(temp)
             })
             .catch(function (error) {
                 Authorization();
