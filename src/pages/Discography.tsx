@@ -11,6 +11,7 @@ function Discography() {
     const [album, setAlbum] = useState<albumType[]>([]);
     const [cookies, setCookie] = useCookies<string>([]);
 
+    const auth = process.env.REACT_APP_AUTH;
     function Authorization() {
         let data = {
             'grant_type': 'client_credentials'
@@ -20,7 +21,7 @@ function Discography() {
             url: 'https://accounts.spotify.com/api/token',
             headers: {
                 'Content-Type': 'application/x-www-form-urlencoded',
-                'Authorization': 'Basic YzhkMDU3YjYxOGMyNDZkODhjNDZkNGE5YWVjNmMxYmI6NjkzNjY1N2NiNjQ4NGFmM2EwMjZiYzlhMmQxNTVmNDg='
+                'Authorization': `Basic ${auth}`
             },
             data: data
         };

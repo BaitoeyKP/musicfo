@@ -8,6 +8,7 @@ function Track() {
     const { id_artist, id_album, artist } = useParams();
     const [tracks, setTracks] = useState<fetchTackType>();
 
+    const auth = process.env.REACT_APP_AUTH;
     function Authorization() {
         let data = {
             'grant_type': 'client_credentials'
@@ -17,7 +18,7 @@ function Track() {
             url: 'https://accounts.spotify.com/api/token',
             headers: {
                 'Content-Type': 'application/x-www-form-urlencoded',
-                'Authorization': 'Basic YzhkMDU3YjYxOGMyNDZkODhjNDZkNGE5YWVjNmMxYmI6NjkzNjY1N2NiNjQ4NGFmM2EwMjZiYzlhMmQxNTVmNDg='
+                'Authorization': `Basic ${auth}`
             },
             data: data
         };
