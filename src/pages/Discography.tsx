@@ -56,7 +56,7 @@ function Discography() {
                         id_artist: "",
                         artist: ""
                     };
-                    if (cookies[tempAlbum.id] == undefined)
+                    if (cookies[tempAlbum.id] === undefined)
                         setCookie(tempAlbum.id, { data: false, type: "album" });
                     return tempAlbum
                 }))

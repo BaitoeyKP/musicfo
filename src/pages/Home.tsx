@@ -79,11 +79,11 @@ function Home() {
                         id: response.data.id,
                         images: response.data.images[0].url
                     };
-                    if (cookies[tempArtist.id] == undefined)
+                    if (cookies[tempArtist.id] === undefined)
                         setCookie(tempArtist.id, { data: false, type: "artist" });
                     setArtists((prevArtists) => {
                         for (let index = 0; index < prevArtists.length; index++) {
-                            if (prevArtists[index].id == tempArtist.id)
+                            if (prevArtists[index].id === tempArtist.id)
                                 return [...prevArtists]
                         }
                         return [...prevArtists, tempArtist]

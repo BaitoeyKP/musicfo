@@ -62,8 +62,8 @@ function Favorite() {
     useEffect(() => {
         cookies.forEach(cookie => {
             const [name, value] = cookie.split('=').map(item => item.trim());
-            if (Cookies[name].data == false) return
-            if (Cookies[name].type == "artist") {
+            if (Cookies[name].data === false) return
+            if (Cookies[name].type === "artist") {
                 let config = {
                     method: 'get',
                     maxBodyLength: Infinity,
@@ -87,14 +87,14 @@ function Favorite() {
 
                         setArtists((prevArtists) => {
                             for (let index = 0; index < prevArtists.length; index++) {
-                                if (prevArtists[index].id == tempArtist.id)
+                                if (prevArtists[index].id === tempArtist.id)
                                     return [...prevArtists]
                             }
                             return [...prevArtists, tempArtist]
                         });
                         setAll((prevArtists) => {
                             for (let index = 0; index < prevArtists.length; index++) {
-                                if (prevArtists[index].id == tempArtist.id)
+                                if (prevArtists[index].id === tempArtist.id)
                                     return [...prevArtists]
                             }
                             return [...prevArtists, tempArtist]
@@ -104,7 +104,7 @@ function Favorite() {
                         Authorization()
                     })
             }
-            else if (Cookies[name].type == "album") {
+            else if (Cookies[name].type === "album") {
                 let config = {
                     method: 'get',
                     maxBodyLength: Infinity,
@@ -128,14 +128,14 @@ function Favorite() {
 
                         setAlbums((prevArtists) => {
                             for (let index = 0; index < prevArtists.length; index++) {
-                                if (prevArtists[index].id == tempAlbum.id)
+                                if (prevArtists[index].id === tempAlbum.id)
                                     return [...prevArtists]
                             }
                             return [...prevArtists, tempAlbum]
                         });
                         setAll((prevArtists) => {
                             for (let index = 0; index < prevArtists.length; index++) {
-                                if (prevArtists[index].id == tempAlbum.id)
+                                if (prevArtists[index].id === tempAlbum.id)
                                     return [...prevArtists]
                             }
                             return [...prevArtists, tempAlbum]
@@ -181,14 +181,14 @@ function Favorite() {
             </div>
             <div className="px-24 py-9 grid m:grid-cols-2 l:grid-cols-3 hd:grid-cols-4 4k:grid-cols-5 place-items-center gap-y-9 gap-x-12 overflow-hidden">
                 {
-                    activeTab == "all" ?
+                    activeTab === "all" ?
                         all.map((x, i) => {
-                            if (x.type == "artist")
+                            if (x.type === "artist")
                                 return <ArtistCard name={x.artist} genre={x.genre} id={x.id} images={x.images}></ArtistCard>
                             else
                                 return <AlbumCard name={x.album} id={x.id} images={x.images} release_date={x.release_date} id_artist={x.id_artist} artist={x.artist}></AlbumCard>
                         })
-                        : activeTab == "artist" ?
+                        : activeTab === "artist" ?
                             artists.map((x, i) => <ArtistCard name={x.artist} genre={x.genre} id={x.id} images={x.images}></ArtistCard>)
                             :
                             albums.map((x, i) => <AlbumCard name={x.album} id={x.id} images={x.images} release_date={x.release_date} id_artist={x.id_artist} artist={x.artist}></AlbumCard>)
