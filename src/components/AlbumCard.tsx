@@ -1,11 +1,10 @@
 import { useEffect, useRef, useState } from 'react';
 import { useCookies } from 'react-cookie';
-import { Link, useParams } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { albumType } from '../Type';
 
 function AlbumCard({ name, release_date, id, images, id_artist, artist }: albumType) {
   const [isFlipped, setIsFlipped] = useState(false);
-  const {} = useParams();
   const [cookies, setCookie] = useCookies<string>([]);
   const [checked, setChecked] = useState(cookies[id].data);
   const [cardHeight, setCardHeight] = useState(0);
@@ -24,7 +23,7 @@ function AlbumCard({ name, release_date, id, images, id_artist, artist }: albumT
     if (isChecked === 'true') {
       setChecked(true);
     }
-  }, []);
+  }, [cookies, id]);
 
   const handleChange = () => {
     setChecked(!checked);
@@ -72,7 +71,7 @@ function AlbumCard({ name, release_date, id, images, id_artist, artist }: albumT
                 fill="none"
                 className="text-info w-9"
               >
-                <g clip-path="url(#clip0_11_370)">
+                <g clipPath="url(#clip0_11_370)">
                   <path
                     d="M26.2467 2C24.5583 2.02626 22.9067 2.49758 21.4587 3.36636C20.0108 4.23513 18.8177 5.4706 18 6.948C17.1823 5.4706 15.9892 4.23513 14.5413 3.36636C13.0933 2.49758 11.4417 2.02626 9.75333 2C7.06182 2.11694 4.52599 3.29436 2.69985 5.27503C0.873698 7.2557 -0.0943261 9.87861 0.00725873 12.5707C0.00725873 19.3885 7.18336 26.8345 13.2019 31.8829C14.5457 33.0122 16.2447 33.6313 18 33.6313C19.7553 33.6313 21.4543 33.0122 22.7981 31.8829C28.8166 26.8345 35.9927 19.3885 35.9927 12.5707C36.0943 9.87861 35.1263 7.2557 33.3002 5.27503C31.474 3.29436 28.9382 2.11694 26.2467 2Z"
                     fill="currentColor"
@@ -137,7 +136,7 @@ function AlbumCard({ name, release_date, id, images, id_artist, artist }: albumT
                     fill="none"
                     className="text-info w-9 h-fit"
                   >
-                    <g clip-path="url(#clip0_11_370)">
+                    <g clipPath="url(#clip0_11_370)">
                       <path
                         d="M26.2467 2C24.5583 2.02626 22.9067 2.49758 21.4587 3.36636C20.0108 4.23513 18.8177 5.4706 18 6.948C17.1823 5.4706 15.9892 4.23513 14.5413 3.36636C13.0933 2.49758 11.4417 2.02626 9.75333 2C7.06182 2.11694 4.52599 3.29436 2.69985 5.27503C0.873698 7.2557 -0.0943261 9.87861 0.00725873 12.5707C0.00725873 19.3885 7.18336 26.8345 13.2019 31.8829C14.5457 33.0122 16.2447 33.6313 18 33.6313C19.7553 33.6313 21.4543 33.0122 22.7981 31.8829C28.8166 26.8345 35.9927 19.3885 35.9927 12.5707C36.0943 9.87861 35.1263 7.2557 33.3002 5.27503C31.474 3.29436 28.9382 2.11694 26.2467 2Z"
                         fill="currentColor"

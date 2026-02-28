@@ -9,7 +9,7 @@ function Track() {
   const [tracks, setTracks] = useState<fetchTackType>();
 
   const auth = process.env.REACT_APP_AUTH;
-  function Authorization() {
+  function Authorization(): Promise<string> {
     let data = {
       grant_type: 'client_credentials',
     };
@@ -22,23 +22,21 @@ function Track() {
       },
       data: data,
     };
-    axios
+    return axios
       .request(config)
       .then(function (response) {
         localStorage.setItem('token', response.data.access_token);
-      })
-      .catch(function (error) {
-        console.error(error);
+        return response.data.access_token;
       });
   }
 
-  function fetch() {
+  function fetchTracks(token: string) {
     let config = {
       method: 'get',
       maxBodyLength: Infinity,
       url: `https://api.spotify.com/v1/albums/${id_album}`,
       headers: {
-        Authorization: `Bearer ${localStorage.getItem('token')}`,
+        Authorization: `Bearer ${token}`,
       },
     };
     axios
@@ -47,12 +45,22 @@ function Track() {
         setTracks(response.data);
       })
       .catch(function (error) {
-        Authorization();
+        Authorization().then(function (newToken) {
+          fetchTracks(newToken);
+        });
       });
   }
 
   useEffect(() => {
-    fetch();
+    const token = localStorage.getItem('token');
+    if (token) {
+      fetchTracks(token);
+    } else {
+      Authorization().then(function (newToken) {
+        fetchTracks(newToken);
+      });
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
   if (!tracks) return <div>loading</div>;
 
@@ -86,7 +94,7 @@ function Track() {
           <div className="flex justify-center hd:justify-start">
             <div className="text-4xl font-medium break-words max-w-full">
               {tracks.tracks.items.map((x: { name: string }, i) => (
-                <p className="pb-3">
+                <p key={i} className="pb-3">
                   <span className="font-semibold w-14 inline-block text-center">{i + 1}.</span>
                   <span>{x.name}</span>
                 </p>

@@ -10,13 +10,13 @@ import AlbumCard from '../components/AlbumCard';
 
 function Favorite() {
   const [activeTab, setActiveTab] = useState('all');
-  const [Cookies, setCookie] = useCookies<string>([]);
+  const [Cookies] = useCookies<string>([]);
   const [all, setAll] = useState<favoriteType[]>([]);
   const [artists, setArtists] = useState<favoriteType[]>([]);
   const [albums, setAlbums] = useState<favoriteType[]>([]);
 
   const auth = process.env.REACT_APP_AUTH;
-  function Authorization() {
+  function Authorization(): Promise<string> {
     let data = {
       grant_type: 'client_credentials',
     };
@@ -29,13 +29,11 @@ function Favorite() {
       },
       data: data,
     };
-    axios
+    return axios
       .request(config)
       .then(function (response) {
         localStorage.setItem('token', response.data.access_token);
-      })
-      .catch(function (error) {
-        console.error(error);
+        return response.data.access_token;
       });
   }
 
@@ -54,10 +52,10 @@ function Favorite() {
     },
   ];
 
-  const cookies = document.cookie.split(';');
-  useEffect(() => {
+  function fetchFavorites(token: string) {
+    const cookies = document.cookie.split(';');
     cookies.forEach((cookie) => {
-      const [name, value] = cookie.split('=').map((item) => item.trim());
+      const [name] = cookie.split('=').map((item) => item.trim());
       if (Cookies[name].data === false) return;
       if (Cookies[name].type === 'artist') {
         let config = {
@@ -65,7 +63,7 @@ function Favorite() {
           maxBodyLength: Infinity,
           url: `https://api.spotify.com/v1/artists/${name}`,
           headers: {
-            Authorization: `Bearer ${localStorage.getItem('token')}`,
+            Authorization: `Bearer ${token}`,
           },
         };
         axios
@@ -96,7 +94,9 @@ function Favorite() {
             });
           })
           .catch(function (error) {
-            Authorization();
+            Authorization().then(function (newToken) {
+              fetchFavorites(newToken);
+            });
           });
       } else if (Cookies[name].type === 'album') {
         let config = {
@@ -104,7 +104,7 @@ function Favorite() {
           maxBodyLength: Infinity,
           url: `https://api.spotify.com/v1/albums/${name}`,
           headers: {
-            Authorization: `Bearer ${localStorage.getItem('token')}`,
+            Authorization: `Bearer ${token}`,
           },
         };
         axios
@@ -135,10 +135,24 @@ function Favorite() {
             });
           })
           .catch(function (error) {
-            Authorization();
+            Authorization().then(function (newToken) {
+              fetchFavorites(newToken);
+            });
           });
       }
     });
+  }
+
+  useEffect(() => {
+    const token = localStorage.getItem('token');
+    if (token) {
+      fetchFavorites(token);
+    } else {
+      Authorization().then(function (newToken) {
+        fetchFavorites(newToken);
+      });
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (
@@ -180,6 +194,7 @@ function Favorite() {
               if (x.type === 'artist')
                 return (
                   <ArtistCard
+                    key={x.id}
                     name={x.artist}
                     genre={x.genre}
                     id={x.id}
@@ -189,6 +204,7 @@ function Favorite() {
               else
                 return (
                   <AlbumCard
+                    key={x.id}
                     name={x.album}
                     id={x.id}
                     images={x.images}
@@ -199,16 +215,18 @@ function Favorite() {
                 );
             })
           : activeTab === 'artist'
-            ? artists.map((x, i) => (
+            ? artists.map((x) => (
                 <ArtistCard
+                  key={x.id}
                   name={x.artist}
                   genre={x.genre}
                   id={x.id}
                   images={x.images}
                 ></ArtistCard>
               ))
-            : albums.map((x, i) => (
+            : albums.map((x) => (
                 <AlbumCard
+                  key={x.id}
                   name={x.album}
                   id={x.id}
                   images={x.images}

@@ -12,7 +12,7 @@ function Discography() {
   const [cookies, setCookie] = useCookies<string>([]);
 
   const auth = process.env.REACT_APP_AUTH;
-  function Authorization() {
+  function Authorization(): Promise<string> {
     let data = {
       grant_type: 'client_credentials',
     };
@@ -25,23 +25,21 @@ function Discography() {
       },
       data: data,
     };
-    axios
+    return axios
       .request(config)
       .then(function (response) {
         localStorage.setItem('token', response.data.access_token);
-      })
-      .catch(function (error) {
-        console.error(error);
+        return response.data.access_token;
       });
   }
 
-  function fetch() {
+  function fetchAlbums(token: string) {
     let config = {
       method: 'get',
       maxBodyLength: Infinity,
       url: `https://api.spotify.com/v1/artists/${id_artist}/albums`,
       headers: {
-        Authorization: `Bearer ${localStorage.getItem('token')}`,
+        Authorization: `Bearer ${token}`,
       },
     };
     axios
@@ -64,12 +62,22 @@ function Discography() {
         setAlbum(temp);
       })
       .catch(function (error) {
-        Authorization();
+        Authorization().then(function (newToken) {
+          fetchAlbums(newToken);
+        });
       });
   }
 
   useEffect(() => {
-    fetch();
+    const token = localStorage.getItem('token');
+    if (token) {
+      fetchAlbums(token);
+    } else {
+      Authorization().then(function (newToken) {
+        fetchAlbums(newToken);
+      });
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   if (!album) return <div>loading</div>;
@@ -89,6 +97,7 @@ function Discography() {
         {album.map((x) => {
           return (
             <AlbumCard
+              key={x.id}
               id={x.id}
               name={x.name}
               images={x.images}

@@ -6,7 +6,7 @@ import { artistType, fetchArtistType } from '../Type';
 import { useCookies } from 'react-cookie';
 
 const artislist = [
-  '2AfmfGFbe0A0WsTYm0SDTx', //(G)I-DLE
+  '2AfmfGFbe0A0WsTYm0SDTx', //I-DLE
   '3aBwCcP4CB8M6S7YV8QkOg', //4EVE
   '6YVMFz59CuY7ngCxTxjpxE', //aespa
   '5RmQ8k4l3HZ8JoPb4mNsML', //Agust D
@@ -37,7 +37,7 @@ function Home() {
   const [cookies, setCookie] = useCookies<string>([]);
 
   const auth = process.env.REACT_APP_AUTH;
-  function Authorization() {
+  function Authorization(): Promise<string> {
     let data = {
       grant_type: 'client_credentials',
     };
@@ -50,52 +50,58 @@ function Home() {
       },
       data: data,
     };
-    axios
-      .request(config)
-      .then(function (response) {
-        localStorage.setItem('token', response.data.access_token);
-      })
-      .catch(function (error) {
-        console.error(error);
-      });
+    return axios.request(config).then(function (response) {
+      localStorage.setItem('token', response.data.access_token);
+      return response.data.access_token;
+    });
   }
 
-  function fetch() {
-    for (let index = 0; index < artislist.length; index++) {
-      let config = {
-        method: 'get',
-        maxBodyLength: Infinity,
-        url: `https://api.spotify.com/v1/artists/${artislist[index]}`,
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem('token')}`,
-        },
-      };
-      axios
-        .request(config)
+  function fetchArtists(token: string) {
+    const requests = artislist.map(function (id) {
+      return axios
+        .request({
+          method: 'get',
+          maxBodyLength: Infinity,
+          url: `https://api.spotify.com/v1/artists/${id}`,
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        })
         .then(function (response: { data: fetchArtistType }) {
-          const tempArtist: artistType = {
+          return {
             name: response.data.name,
             genre: response.data.genres,
             id: response.data.id,
             images: response.data.images[0].url,
-          };
+          } as artistType;
+        });
+    });
+
+    Promise.all(requests)
+      .then(function (results) {
+        results.forEach(function (tempArtist) {
           if (cookies[tempArtist.id] === undefined)
             setCookie(tempArtist.id, { data: false, type: 'artist' });
-          setArtists((prevArtists) => {
-            for (let index = 0; index < prevArtists.length; index++) {
-              if (prevArtists[index].id === tempArtist.id) return [...prevArtists];
-            }
-            return [...prevArtists, tempArtist];
-          });
-        })
-        .catch(function (error) {
-          Authorization();
         });
-    }
+        setArtists(results);
+      })
+      .catch(function (error) {
+        Authorization().then(function (newToken) {
+          fetchArtists(newToken);
+        });
+      });
   }
 
   useEffect(() => {
-    fetch();
+    const token = localStorage.getItem('token');
+    if (token) {
+      fetchArtists(token);
+    } else {
+      Authorization().then(function (newToken) {
+        fetchArtists(newToken);
+      });
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
   if (!artists) return <div>loading...</div>;
 
@@ -106,7 +112,7 @@ function Home() {
       <div className="px-24 py-9 grid m:grid-cols-2 l:grid-cols-3 hd:grid-cols-4 4k:grid-cols-5 place-items-center gap-y-9 gap-x-12 overflow-hidden">
         {artists.map((x) => {
           return (
-            <ArtistCard id={x.id} name={x.name} images={x.images} genre={x.genre}></ArtistCard>
+            <ArtistCard key={x.id} id={x.id} name={x.name} images={x.images} genre={x.genre}></ArtistCard>
           );
         })}
       </div>
