@@ -1,5 +1,5 @@
 # Authorization
-You can request auth key from https://developer.spotify.com/documentation/web-api
+You can request auth from https://developer.spotify.com/documentation/web-api
 
 # Getting Started with Create React App
 
