@@ -89,7 +89,7 @@ function Track() {
           </div>
           <h2 className="font-bold text-4xl text-center pt-4">{tracks.release_date}</h2>
         </div>
-        <div className="hd:min-w-[35%] hd:max-w-[50%] hd:overflow-y-scroll h-full w-full hd:w-fit">
+        <div className="hd:min-w-[35%] hd:max-w-[50%] hd:overflow-y-auto h-full w-full hd:w-fit">
           <h2 className="text-5xl font-bold pb-5 text-center hd:text-start">TRACK</h2>
           <div className="flex justify-center hd:justify-start">
             <div className="text-4xl font-medium break-words max-w-full">
