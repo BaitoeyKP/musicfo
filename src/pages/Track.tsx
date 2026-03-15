@@ -3,32 +3,11 @@ import NavbarArtist from '../components/NavbarArtist';
 import { useEffect, useState } from 'react';
 import { fetchTackType } from '../Type';
 import axios from 'axios';
+import { Authorization } from '../utils/spotifyAuth';
 
 function Track() {
   const { id_artist, id_album, artist } = useParams();
   const [tracks, setTracks] = useState<fetchTackType>();
-
-  const auth = process.env.REACT_APP_AUTH;
-  function Authorization(): Promise<string> {
-    let data = {
-      grant_type: 'client_credentials',
-    };
-    let config = {
-      method: 'post',
-      url: 'https://accounts.spotify.com/api/token',
-      headers: {
-        'Content-Type': 'application/x-www-form-urlencoded',
-        Authorization: `Basic ${auth}`,
-      },
-      data: data,
-    };
-    return axios
-      .request(config)
-      .then(function (response) {
-        localStorage.setItem('token', response.data.access_token);
-        return response.data.access_token;
-      });
-  }
 
   function fetchTracks(token: string) {
     let config = {
@@ -44,7 +23,7 @@ function Track() {
       .then(function (response: { data: fetchTackType }) {
         setTracks(response.data);
       })
-      .catch(function (error) {
+      .catch(function (_error) {
         Authorization().then(function (newToken) {
           fetchTracks(newToken);
         });
@@ -60,7 +39,7 @@ function Track() {
         fetchTracks(newToken);
       });
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
   if (!tracks) return <div>loading</div>;
 

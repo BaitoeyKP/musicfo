@@ -7,6 +7,7 @@ import { favoriteType, fetchAlbumType, fetchArtistType } from '../Type';
 import axios from 'axios';
 import ArtistCard from '../components/ArtistCard';
 import AlbumCard from '../components/AlbumCard';
+import { Authorization } from '../utils/spotifyAuth';
 
 function Favorite() {
   const [activeTab, setActiveTab] = useState('all');
@@ -14,28 +15,6 @@ function Favorite() {
   const [all, setAll] = useState<favoriteType[]>([]);
   const [artists, setArtists] = useState<favoriteType[]>([]);
   const [albums, setAlbums] = useState<favoriteType[]>([]);
-
-  const auth = process.env.REACT_APP_AUTH;
-  function Authorization(): Promise<string> {
-    let data = {
-      grant_type: 'client_credentials',
-    };
-    let config = {
-      method: 'post',
-      url: 'https://accounts.spotify.com/api/token',
-      headers: {
-        'Content-Type': 'application/x-www-form-urlencoded',
-        Authorization: `Basic ${auth}`,
-      },
-      data: data,
-    };
-    return axios
-      .request(config)
-      .then(function (response) {
-        localStorage.setItem('token', response.data.access_token);
-        return response.data.access_token;
-      });
-  }
 
   const data = [
     {
@@ -93,7 +72,7 @@ function Favorite() {
               return [...prevArtists, tempArtist];
             });
           })
-          .catch(function (error) {
+          .catch(function (_error) {
             Authorization().then(function (newToken) {
               fetchFavorites(newToken);
             });
@@ -134,7 +113,7 @@ function Favorite() {
               return [...prevArtists, tempAlbum];
             });
           })
-          .catch(function (error) {
+          .catch(function (_error) {
             Authorization().then(function (newToken) {
               fetchFavorites(newToken);
             });
@@ -152,7 +131,7 @@ function Favorite() {
         fetchFavorites(newToken);
       });
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (

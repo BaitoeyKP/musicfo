@@ -5,33 +5,12 @@ import { useEffect, useState } from 'react';
 import { useCookies } from 'react-cookie';
 import { albumType, fetchAlbumType } from '../Type';
 import axios from 'axios';
+import { Authorization } from '../utils/spotifyAuth';
 
 function Discography() {
   const { id_artist, artist } = useParams();
   const [album, setAlbum] = useState<albumType[]>([]);
   const [cookies, setCookie] = useCookies<string>([]);
-
-  const auth = process.env.REACT_APP_AUTH;
-  function Authorization(): Promise<string> {
-    let data = {
-      grant_type: 'client_credentials',
-    };
-    let config = {
-      method: 'post',
-      url: 'https://accounts.spotify.com/api/token',
-      headers: {
-        'Content-Type': 'application/x-www-form-urlencoded',
-        Authorization: `Basic ${auth}`,
-      },
-      data: data,
-    };
-    return axios
-      .request(config)
-      .then(function (response) {
-        localStorage.setItem('token', response.data.access_token);
-        return response.data.access_token;
-      });
-  }
 
   function fetchAlbums(token: string) {
     let config = {
@@ -61,7 +40,7 @@ function Discography() {
         temp = temp.sort((a, b) => (a.release_date > b.release_date ? -1 : 1));
         setAlbum(temp);
       })
-      .catch(function (error) {
+      .catch(function (_error) {
         Authorization().then(function (newToken) {
           fetchAlbums(newToken);
         });
@@ -77,7 +56,7 @@ function Discography() {
         fetchAlbums(newToken);
       });
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   if (!album) return <div>loading</div>;
