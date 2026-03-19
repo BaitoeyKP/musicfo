@@ -12,7 +12,6 @@ const artistList = [
   '6YVMFz59CuY7ngCxTxjpxE', //aespa
   '5RmQ8k4l3HZ8JoPb4mNsML', //Agust D
   '2p48L95TwEaYkSdn6R7LOr', //BamBam
-  '2ORibfYGMt8fuIimSDCTq1', //bamm
   '41MozSoPIsD1dJM0CLPjZF', //BLACKPINK
   '3Nrfpe0tUJi4K4DXYWgMUX', //BTS
   '3HqSLMAZ3g3d5poNaI7GOU', //IU
@@ -23,12 +22,9 @@ const artistList = [
   '1uNFoZAHBGtllmzznpCI3s', //Justin Bieber
   '4SpbR6yFEvexJuaBpgAU5p', //LE SSERAFIM
   '1eVPKI2R4NlX6P5FIuMXis', //MILLI
-  '6HvZYsbFfjnjFrWF950C9d', //NewJeans
   '6HlUN1Md7UT62mNJHOYRsK', //PiXXie
-  '4tNPboeMQnpoUX7IEbPLdF', //PROXIE
   '2auC28zjQyVTsiZKNgPRGs', //RM
   '0ebNdVaOfp6N0oZ1guIxM8', //SUGA
-  '7n2Ycct7Beij7Dj7meI4X0', //TWICE
   '0ghlgldX5Dd6720Q3qFyQB', //txt
   '3JsHnjpbhX4SnySpvpa9DK', //V
 ];
@@ -42,6 +38,8 @@ function Home() {
       const results: artistType[] = [];
 
       for (const id of artistList) {
+        console.log(0);
+
         const response = await axios.get(`https://api.spotify.com/v1/artists/${id}`, {
           headers: { Authorization: `Bearer ${token}` },
         });
@@ -60,8 +58,9 @@ function Home() {
       });
 
       setArtists(results);
-      localStorage.setItem('artists_cache', JSON.stringify(results));
+      sessionStorage.setItem('artists_cache', JSON.stringify(results));
     } catch {
+      localStorage.removeItem('token');
       if (retryCount >= 2) {
         console.error('Failed after 3 attempts');
         return;
@@ -71,10 +70,14 @@ function Home() {
   }
 
   useEffect(() => {
-    const cached = localStorage.getItem('artists_cache');
+    const cached = sessionStorage.getItem('artists_cache');
     if (cached) {
-      setArtists(JSON.parse(cached));
-      return;
+      const parsed = JSON.parse(cached);
+      if (parsed.length > 0 && Array.isArray(parsed[0].genre)) {
+        setArtists(parsed);
+        return;
+      }
+      sessionStorage.removeItem('artists_cache');
     }
 
     const token = localStorage.getItem('token');

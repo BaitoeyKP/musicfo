@@ -110,7 +110,7 @@ function ArtistCard({ name, genre, id, images }: artistType) {
       >
         <div className="overflow-hidden max-h-96 cursor-context-menu">
           <h2 className="font-bold text-5xl hyphens-auto leading-tight">{name}</h2>
-          <p className="text-4xl font-medium py-4">{genre.join(', ')}</p>
+          <p className="text-4xl font-medium py-4">{genre?.join(', ')}</p>
         </div>
         <div className="flex gap-x-2">
           <Link to={`/discography/${name}/${id}`} className="btn btn-outline text-xl w-[48%]">
