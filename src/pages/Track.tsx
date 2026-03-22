@@ -3,13 +3,26 @@ import NavbarArtist from '../components/NavbarArtist';
 import { useEffect, useState } from 'react';
 import { fetchTackType } from '../Type';
 import axios from 'axios';
-import { Authorization } from '../utils/spotifyAuth';
+import { Authorization, getValidToken } from '../utils/spotifyAuth';
 
 function Track() {
   const { id_artist, id_album, artist } = useParams();
   const [tracks, setTracks] = useState<fetchTackType>();
 
-  function fetchTracks(token: string) {
+  const THIRTY_MINUTES = 30 * 60 * 1000;
+
+  function fetchTracks(token: string, retryCount = 0) {
+    const cacheKey = `track_${id_album}`;
+    const cached = sessionStorage.getItem(cacheKey);
+    if (cached) {
+      const { data, savedAt } = JSON.parse(cached);
+      if (Date.now() - savedAt < THIRTY_MINUTES) {
+        setTracks(data);
+        return;
+      }
+      sessionStorage.removeItem(cacheKey);
+    }
+
     let config = {
       method: 'get',
       maxBodyLength: Infinity,
@@ -22,23 +35,21 @@ function Track() {
       .request(config)
       .then(function (response: { data: fetchTackType }) {
         setTracks(response.data);
+        sessionStorage.setItem(cacheKey, JSON.stringify({ data: response.data, savedAt: Date.now() }));
       })
       .catch(function (_error) {
+        if (retryCount >= 2) {
+          console.error('Failed after 3 attempts');
+          return;
+        }
         Authorization().then(function (newToken) {
-          fetchTracks(newToken);
+          fetchTracks(newToken, retryCount + 1);
         });
       });
   }
 
   useEffect(() => {
-    const token = localStorage.getItem('token');
-    if (token) {
-      fetchTracks(token);
-    } else {
-      Authorization().then(function (newToken) {
-        fetchTracks(newToken);
-      });
-    }
+    getValidToken().then((token) => fetchTracks(token));
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
   if (!tracks) return <div>loading</div>;
@@ -64,7 +75,7 @@ function Track() {
       <div className="flex flex-wrap py-9 px-12 hd:px-24 justify-center gap-x-12 w-full gap-y-10 cursor-context-menu flex-1 overflow-hidden">
         <div className="flex flex-col max-w-[35%] min-w-[300px] w-fit flex-grow max-h-full">
           <div className="max-h-[90%] flex items-center justify-center">
-            <img src={tracks.images[0].url} alt="" className="rounded-lg  h-full" />
+            <img src={tracks.images[0].url} alt="" className="rounded-lg  h-full" loading="lazy" />
           </div>
           <h2 className="font-bold text-4xl text-center pt-4">{tracks.release_date}</h2>
         </div>

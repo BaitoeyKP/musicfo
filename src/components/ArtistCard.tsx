@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { useCookies } from 'react-cookie';
 import { artistType } from '../Type';
 import { Link } from 'react-router-dom';
@@ -55,7 +55,7 @@ function ArtistCard({ name, genre, id, images }: artistType) {
           className="flex flex-col justify-around w-full gap-y-3"
           onMouseOver={handleFlipB}
         >
-          <img src={images} className="rounded-lg" alt="" />
+          <img src={images} className="rounded-lg" alt="" loading="lazy" />
           <h2 className="font-bold text-5xl max-w-full truncate pb-2">{name}</h2>
         </Link>
         <div className="flex justify-end">
@@ -168,4 +168,4 @@ function ArtistCard({ name, genre, id, images }: artistType) {
   );
 }
 
-export default ArtistCard;
+export default React.memo(ArtistCard);

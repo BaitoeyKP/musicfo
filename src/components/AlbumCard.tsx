@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { useCookies } from 'react-cookie';
 import { Link } from 'react-router-dom';
 import { albumType } from '../Type';
@@ -56,7 +56,7 @@ function AlbumCard({ name, release_date, id, images, id_artist, artist }: albumT
           className="flex flex-col justify-around w-full gap-y-3"
           onMouseOver={handleFlipB}
         >
-          <img src={images} className="rounded-lg" alt="" />
+          <img src={images} className="rounded-lg" alt="" loading="lazy" />
           <h2 className="font-bold text-5xl max-w-full truncate pb-2">{name}</h2>
         </Link>
         <div className="flex justify-end">
@@ -174,4 +174,4 @@ function AlbumCard({ name, release_date, id, images, id_artist, artist }: albumT
   );
 }
 
-export default AlbumCard;
+export default React.memo(AlbumCard);

@@ -5,14 +5,27 @@ import { useEffect, useState } from 'react';
 import { useCookies } from 'react-cookie';
 import { albumType, fetchAlbumType } from '../Type';
 import axios from 'axios';
-import { Authorization } from '../utils/spotifyAuth';
+import { Authorization, getValidToken } from '../utils/spotifyAuth';
 
 function Discography() {
   const { id_artist, artist } = useParams();
   const [album, setAlbum] = useState<albumType[]>([]);
   const [cookies, setCookie] = useCookies<string>([]);
 
-  function fetchAlbums(token: string) {
+  const THIRTY_MINUTES = 30 * 60 * 1000;
+
+  function fetchAlbums(token: string, retryCount = 0) {
+    const cacheKey = `disco_${id_artist}`;
+    const cached = sessionStorage.getItem(cacheKey);
+    if (cached) {
+      const { data, savedAt } = JSON.parse(cached);
+      if (Date.now() - savedAt < THIRTY_MINUTES) {
+        setAlbum(data);
+        return;
+      }
+      sessionStorage.removeItem(cacheKey);
+    }
+
     let config = {
       method: 'get',
       maxBodyLength: Infinity,
@@ -39,23 +52,21 @@ function Discography() {
         });
         temp = temp.sort((a, b) => (a.release_date > b.release_date ? -1 : 1));
         setAlbum(temp);
+        sessionStorage.setItem(cacheKey, JSON.stringify({ data: temp, savedAt: Date.now() }));
       })
       .catch(function (_error) {
+        if (retryCount >= 2) {
+          console.error('Failed after 3 attempts');
+          return;
+        }
         Authorization().then(function (newToken) {
-          fetchAlbums(newToken);
+          fetchAlbums(newToken, retryCount + 1);
         });
       });
   }
 
   useEffect(() => {
-    const token = localStorage.getItem('token');
-    if (token) {
-      fetchAlbums(token);
-    } else {
-      Authorization().then(function (newToken) {
-        fetchAlbums(newToken);
-      });
-    }
+    getValidToken().then((token) => fetchAlbums(token));
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 

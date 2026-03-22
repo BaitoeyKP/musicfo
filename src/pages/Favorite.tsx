@@ -7,7 +7,7 @@ import { favoriteType, fetchAlbumType, fetchArtistType } from '../Type';
 import axios from 'axios';
 import ArtistCard from '../components/ArtistCard';
 import AlbumCard from '../components/AlbumCard';
-import { Authorization } from '../utils/spotifyAuth';
+import { Authorization, getValidToken } from '../utils/spotifyAuth';
 
 function Favorite() {
   const [activeTab, setActiveTab] = useState('all');
@@ -31,106 +31,98 @@ function Favorite() {
     },
   ];
 
-  function fetchFavorites(token: string) {
+  const THIRTY_MINUTES = 30 * 60 * 1000;
+
+  function getCachedFavorite(key: string): favoriteType | null {
+    const cached = sessionStorage.getItem(key);
+    if (!cached) return null;
+    const { data, savedAt } = JSON.parse(cached);
+    if (Date.now() - savedAt < THIRTY_MINUTES) return data;
+    sessionStorage.removeItem(key);
+    return null;
+  }
+
+  async function fetchFavorites(token: string, retryCount = 0) {
     const cookies = document.cookie.split(';');
-    cookies.forEach((cookie) => {
+    const artistItems: favoriteType[] = [];
+    const albumItems: favoriteType[] = [];
+
+    const promises = cookies.map(async (cookie) => {
       const [name] = cookie.split('=').map((item) => item.trim());
-      if (Cookies[name].data === false) return;
-      if (Cookies[name].type === 'artist') {
-        let config = {
-          method: 'get',
-          maxBodyLength: Infinity,
-          url: `https://api.spotify.com/v1/artists/${name}`,
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        };
-        axios
-          .request(config)
-          .then(function (response: { data: fetchArtistType }) {
-            const tempArtist: favoriteType = {
-              artist: response.data.name,
-              genre: response.data.genres,
-              id: response.data.id,
-              images: response.data.images[0].url,
-              type: 'artist',
-              release_date: '',
-              album: '',
-              id_artist: '',
-            };
+      if (Cookies[name]?.data === false) return;
 
-            setArtists((prevArtists) => {
-              for (let index = 0; index < prevArtists.length; index++) {
-                if (prevArtists[index].id === tempArtist.id) return [...prevArtists];
-              }
-              return [...prevArtists, tempArtist];
-            });
-            setAll((prevArtists) => {
-              for (let index = 0; index < prevArtists.length; index++) {
-                if (prevArtists[index].id === tempArtist.id) return [...prevArtists];
-              }
-              return [...prevArtists, tempArtist];
-            });
-          })
-          .catch(function (_error) {
-            Authorization().then(function (newToken) {
-              fetchFavorites(newToken);
-            });
-          });
-      } else if (Cookies[name].type === 'album') {
-        let config = {
-          method: 'get',
-          maxBodyLength: Infinity,
-          url: `https://api.spotify.com/v1/albums/${name}`,
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        };
-        axios
-          .request(config)
-          .then(function (response: { data: fetchAlbumType }) {
-            const tempAlbum: favoriteType = {
-              album: response.data.name,
-              genre: [],
-              id: response.data.id,
-              images: response.data.images[0].url,
-              type: 'album',
-              release_date: response.data.release_date,
-              artist: response.data.artists[0].name,
-              id_artist: response.data.artists[0].id,
-            };
+      if (Cookies[name]?.type === 'artist') {
+        const cached = getCachedFavorite(`fav_artist_${name}`);
+        if (cached) {
+          artistItems.push(cached);
+          return;
+        }
 
-            setAlbums((prevArtists) => {
-              for (let index = 0; index < prevArtists.length; index++) {
-                if (prevArtists[index].id === tempAlbum.id) return [...prevArtists];
-              }
-              return [...prevArtists, tempAlbum];
-            });
-            setAll((prevArtists) => {
-              for (let index = 0; index < prevArtists.length; index++) {
-                if (prevArtists[index].id === tempAlbum.id) return [...prevArtists];
-              }
-              return [...prevArtists, tempAlbum];
-            });
-          })
-          .catch(function (_error) {
-            Authorization().then(function (newToken) {
-              fetchFavorites(newToken);
-            });
-          });
+        const response = await axios.get<fetchArtistType>(
+          `https://api.spotify.com/v1/artists/${name}`,
+          { headers: { Authorization: `Bearer ${token}` } }
+        );
+        const tempArtist: favoriteType = {
+          artist: response.data.name,
+          genre: response.data.genres,
+          id: response.data.id,
+          images: response.data.images[0].url,
+          type: 'artist',
+          release_date: '',
+          album: '',
+          id_artist: '',
+        };
+        sessionStorage.setItem(
+          `fav_artist_${name}`,
+          JSON.stringify({ data: tempArtist, savedAt: Date.now() })
+        );
+        artistItems.push(tempArtist);
+      } else if (Cookies[name]?.type === 'album') {
+        const cached = getCachedFavorite(`fav_album_${name}`);
+        if (cached) {
+          albumItems.push(cached);
+          return;
+        }
+
+        const response = await axios.get<fetchAlbumType>(
+          `https://api.spotify.com/v1/albums/${name}`,
+          { headers: { Authorization: `Bearer ${token}` } }
+        );
+        const tempAlbum: favoriteType = {
+          album: response.data.name,
+          genre: [],
+          id: response.data.id,
+          images: response.data.images[0].url,
+          type: 'album',
+          release_date: response.data.release_date,
+          artist: response.data.artists[0].name,
+          id_artist: response.data.artists[0].id,
+        };
+        sessionStorage.setItem(
+          `fav_album_${name}`,
+          JSON.stringify({ data: tempAlbum, savedAt: Date.now() })
+        );
+        albumItems.push(tempAlbum);
       }
     });
+
+    try {
+      await Promise.all(promises);
+      setArtists(artistItems);
+      setAlbums(albumItems);
+      setAll([...artistItems, ...albumItems]);
+    } catch {
+      if (retryCount >= 2) {
+        console.error('Failed after 3 attempts');
+        return;
+      }
+      const newToken = await Authorization();
+      fetchFavorites(newToken, retryCount + 1);
+    }
   }
 
   useEffect(() => {
-    const token = localStorage.getItem('token');
-    if (token) {
-      fetchFavorites(token);
-    } else {
-      Authorization().then(function (newToken) {
-        fetchFavorites(newToken);
-      });
-    }
+    getValidToken().then((token) => fetchFavorites(token));
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 

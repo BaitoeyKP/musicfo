@@ -1,22 +1,38 @@
 import axios from 'axios';
 
-const auth = process.env.REACT_APP_AUTH;
+const client_id = process.env.REACT_APP_CLIENT_ID;
+const client_secret = process.env.REACT_APP_CLIENT_SECRET;
 
 export function Authorization(): Promise<string> {
-  let data = {
+  const data = new URLSearchParams({
     grant_type: 'client_credentials',
-  };
-  let config = {
-    method: 'post',
-    url: 'https://accounts.spotify.com/api/token',
-    headers: {
-      'Content-Type': 'application/x-www-form-urlencoded',
-      Authorization: `Basic ${auth}`,
-    },
-    data: data,
-  };
-  return axios.request(config).then(function (response) {
-    localStorage.setItem('token', response.data.access_token);
-    return response.data.access_token;
+    client_id: client_id || '',
+    client_secret: client_secret || '',
   });
+
+  return axios
+    .post('https://accounts.spotify.com/api/token', data, {
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded',
+      },
+    })
+    .then(function (response) {
+      localStorage.setItem('token', response.data.access_token);
+      localStorage.setItem(
+        'token_expires_at',
+        String(Date.now() + response.data.expires_in * 1000 - 60000)
+      );
+      return response.data.access_token;
+    });
+}
+
+export async function getValidToken(): Promise<string> {
+  const token = localStorage.getItem('token');
+  const expiresAt = localStorage.getItem('token_expires_at');
+
+  if (token && expiresAt && Date.now() < Number(expiresAt)) {
+    return token;
+  }
+
+  return Authorization();
 }

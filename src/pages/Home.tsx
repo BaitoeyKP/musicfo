@@ -1,10 +1,10 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import Navbar from '../components/Navbar';
 import axios from 'axios';
 import ArtistCard from '../components/ArtistCard';
 import { artistType } from '../Type';
 import { useCookies } from 'react-cookie';
-import { Authorization } from '../utils/spotifyAuth';
+import { Authorization, getValidToken } from '../utils/spotifyAuth';
 
 const artistList = [
   '2AfmfGFbe0A0WsTYm0SDTx', //I-DLE
@@ -32,33 +32,30 @@ const artistList = [
 function Home() {
   const [artists, setArtists] = useState<artistType[]>([]);
   const [cookies, setCookie] = useCookies<string>([]);
+  const isFetching = useRef(false);
 
   async function fetchArtists(token: string, retryCount = 0) {
     try {
-      const results: artistType[] = [];
-
-      for (const id of artistList) {
-        console.log(0);
-
-        const response = await axios.get(`https://api.spotify.com/v1/artists/${id}`, {
-          headers: { Authorization: `Bearer ${token}` },
-        });
-        results.push({
-          name: response.data.name,
-          genre: response.data.genres,
-          id: response.data.id,
-          images: response.data.images[0].url,
-        });
-
-        await new Promise((res) => setTimeout(res, 200));
-      }
+      const results = await Promise.all(
+        artistList.map(async (id) => {
+          const response = await axios.get(`https://api.spotify.com/v1/artists/${id}`, {
+            headers: { Authorization: `Bearer ${token}` },
+          });
+          return {
+            name: response.data.name,
+            genre: response.data.genres,
+            id: response.data.id,
+            images: response.data.images[0].url,
+          } as artistType;
+        }),
+      );
 
       results.forEach((artist) => {
         if (cookies[artist.id] === undefined) setCookie(artist.id, { data: false, type: 'artist' });
       });
 
       setArtists(results);
-      sessionStorage.setItem('artists_cache', JSON.stringify(results));
+      localStorage.setItem('artists_cache', JSON.stringify({ data: results, savedAt: Date.now() }));
     } catch {
       localStorage.removeItem('token');
       if (retryCount >= 2) {
@@ -70,24 +67,21 @@ function Home() {
   }
 
   useEffect(() => {
-    const cached = sessionStorage.getItem('artists_cache');
+    if (isFetching.current) return;
+    isFetching.current = true;
+
+    const cached = localStorage.getItem('artists_cache');
     if (cached) {
-      const parsed = JSON.parse(cached);
-      if (parsed.length > 0 && Array.isArray(parsed[0].genre)) {
-        setArtists(parsed);
+      const { data, savedAt } = JSON.parse(cached);
+      const ONE_DAY = 24 * 60 * 60 * 1000;
+      if (data?.length > 0 && Date.now() - savedAt < ONE_DAY) {
+        setArtists(data);
         return;
       }
-      sessionStorage.removeItem('artists_cache');
+      localStorage.removeItem('artists_cache');
     }
 
-    const token = localStorage.getItem('token');
-    if (token) {
-      fetchArtists(token);
-    } else {
-      Authorization().then(function (newToken) {
-        fetchArtists(newToken);
-      });
-    }
+    getValidToken().then((token) => fetchArtists(token));
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
