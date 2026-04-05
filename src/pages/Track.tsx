@@ -35,7 +35,10 @@ function Track() {
       .request(config)
       .then(function (response: { data: fetchTackType }) {
         setTracks(response.data);
-        sessionStorage.setItem(cacheKey, JSON.stringify({ data: response.data, savedAt: Date.now() }));
+        sessionStorage.setItem(
+          cacheKey,
+          JSON.stringify({ data: response.data, savedAt: Date.now() }),
+        );
       })
       .catch(function (_error) {
         if (retryCount >= 2) {
@@ -72,14 +75,14 @@ function Track() {
           <div className="w-1/12 hd:w-1/4"></div>
         </div>
       </div>
-      <div className="flex flex-wrap py-9 px-12 hd:px-24 justify-center gap-x-12 w-full gap-y-10 cursor-context-menu flex-1 overflow-hidden">
-        <div className="flex flex-col max-w-[35%] min-w-[300px] w-fit flex-grow max-h-full">
+      <div className="flex flex-wrap py-9 px-12 hd:px-24 justify-center content-start gap-x-12 w-full gap-y-10 cursor-context-menu hd:flex-1 overflow-y-auto">
+        <div className="flex flex-col max-w-[35%] min-w-[300px] w-fit hd:flex-grow hd:max-h-full">
           <div className="max-h-[90%] flex items-center justify-center">
             <img src={tracks.images[0].url} alt="" className="rounded-lg  h-full" loading="lazy" />
           </div>
           <h2 className="font-bold text-4xl text-center pt-4">{tracks.release_date}</h2>
         </div>
-        <div className="hd:min-w-[35%] hd:max-w-[50%] hd:overflow-y-auto h-full w-full hd:w-fit">
+        <div className="hd:min-w-[35%] hd:max-w-[50%] hd:overflow-y-auto hd:h-full w-full hd:w-fit">
           <h2 className="text-5xl font-bold pb-5 text-center hd:text-start">TRACK</h2>
           <div className="flex justify-center hd:justify-start">
             <div className="text-4xl font-medium break-words max-w-full">
